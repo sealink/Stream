@@ -192,7 +192,7 @@ abstract class Stream implements IStream\Stream, Event\Listenable
      * @return  array
      * @throws  \Hoa\Stream\Exception
      */
-    final private static function &_getStream(
+    private static function &_getStream(
         $streamName,
         Stream $handler,
         $context = null
@@ -219,12 +219,12 @@ abstract class Stream implements IStream\Stream, Event\Listenable
                 self::RESOURCE => $handler->_open($streamName, $context),
                 self::CONTEXT  => $context
             ];
-            Event::register(
+            Event\Event::register(
                 'hoa://Event/Stream/' . $streamName,
                 $handler
             );
             // Add :open-ready?
-            Event::register(
+            Event\Event::register(
                 'hoa://Event/Stream/' . $streamName . ':close-before',
                 $handler
             );
@@ -314,7 +314,7 @@ abstract class Stream implements IStream\Stream, Event\Listenable
             return;
         }
 
-        Event::notify(
+        Event\Event::notify(
             'hoa://Event/Stream/' . $streamName . ':close-before',
             $this,
             new Event\Bucket()
@@ -326,10 +326,10 @@ abstract class Stream implements IStream\Stream, Event\Listenable
 
         unset(self::$_register[$name]);
         $this->_bucket[self::HANDLER] = null;
-        Event::unregister(
+        Event\Event::unregister(
             'hoa://Event/Stream/' . $streamName
         );
-        Event::unregister(
+        Event\Event::unregister(
             'hoa://Event/Stream/' . $streamName . ':close-before'
         );
 
@@ -658,7 +658,7 @@ abstract class Stream implements IStream\Stream, Event\Listenable
  * @copyright  Copyright © 2007-2017 Hoa community
  * @license    New BSD License
  */
-class _Protocol extends Protocol\Node
+class _Protocol extends Protocol\Node\Node
 {
     /**
      * Component's name.
@@ -684,16 +684,16 @@ class _Protocol extends Protocol\Node
 /**
  * Flex entity.
  */
-Consistency::flexEntity('Hoa\Stream\Stream');
+Consistency\Consistency::flexEntity('Hoa\Stream\Stream');
 
 /**
  * Shutdown method.
  */
-Consistency::registerShutdownFunction(xcallable('Hoa\Stream\Stream::_Hoa_Stream'));
+Consistency\Consistency::registerShutdownFunction(xcallable('Hoa\Stream\Stream::_Hoa_Stream'));
 
 /**
  * Add the `hoa://Library/Stream` node. Should be use to reach/get an entry
  * in the stream register.
  */
-$protocol              = Protocol::getInstance();
+$protocol              = Protocol\Protocol::getInstance();
 $protocol['Library'][] = new _Protocol();

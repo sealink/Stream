@@ -36,7 +36,7 @@
 
 namespace Hoa\Stream;
 
-use Hoa\Exception as HoaException;
+use Hoa\Exception\Exception as HoaException;
 
 /**
  * Class \Hoa\Stream\Exception.
